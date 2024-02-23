@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o out/url-shortener cmd/main.go  
+RUN CGO_ENABLED=0 GOOS=linux go build -o out/url-shortener main.go  
 
 EXPOSE 8080
 
