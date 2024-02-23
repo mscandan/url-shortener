@@ -22,3 +22,9 @@ go.work
 
 # environment variables
 .env
+
+#
+.DS_Store
+
+#zipped filed
+*.fiber.gz

@@ -12,6 +12,10 @@ import (
 func (base *Controller) GetFullUrlByShortUrl(c *fiber.Ctx) error {
 	id := c.Params("id")
 
+	if id == "" {
+		return nil
+	}
+
 	// get from db if exists redirect to it
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -43,9 +47,11 @@ func (base *Controller) CreateShortUrl(c *fiber.Ctx) error {
 		return err
 	}
 
-	response := dto.CreateShortenedUrlResponse{
-		ShortLink: c.Hostname() + "/" + *result,
-	}
+	formatted_short_url := c.Hostname() + "/" + *result
 
-	return c.Status(fiber.StatusCreated).JSON(&response)
+	span := "<span>" + formatted_short_url + "</span>"
+
+	c.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
+
+	return c.Status(fiber.StatusCreated).SendString(span)
 }

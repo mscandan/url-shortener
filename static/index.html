@@ -4,8 +4,40 @@
     <meta charset="UTF-8" />
     <title>Url Shortener</title>
     <link rel="stylesheet" href="main.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    hi bro
+    <header class="header">
+      <span>Url Shortener</span>
+    </header>
+    <section class="content">
+      <form hx-post="/url" hx-target="#created-url">
+        <input placeholder="paste the long url" type="url" name="full_url" />
+        <button type="submit">Create Short Url</button>
+      </form>
+      <div id="created-url"></div>
+    </section>
   </body>
 </html>
