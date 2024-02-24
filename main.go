@@ -46,6 +46,6 @@ func main() {
 
 	app.Post("/url", controller.CreateShortUrl)
 
-	app.Listen(":8080")
+	app.Listen(":" + environment_config.Port)
 
 }

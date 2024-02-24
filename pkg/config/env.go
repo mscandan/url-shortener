@@ -11,6 +11,7 @@ type EnvironmentConfig struct {
 	MongoDB_URI   string
 	Redis_URL     string
 	Database_Name string
+	Port          string
 }
 
 type EnvironmentConfigMissingError struct {
@@ -22,7 +23,9 @@ func (m *EnvironmentConfigMissingError) Error() string {
 }
 
 func Config() (*EnvironmentConfig, error) {
-	if err := godotenv.Load(); err != nil {
+	log.Println("Attempting to load env variables")
+
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Println("No .env file found")
 		return nil, err
 	}
@@ -41,13 +44,22 @@ func Config() (*EnvironmentConfig, error) {
 
 	redis_url := os.Getenv("REDIS_URL")
 
-	if database_name == "" {
+	if redis_url == "" {
 		return nil, &EnvironmentConfigMissingError{MissingKey: "REDIS_URL"}
 	}
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		return nil, &EnvironmentConfigMissingError{MissingKey: "PORT"}
+	}
+
+	log.Println("Environment variables loaded succesfully")
 
 	return &EnvironmentConfig{
 		MongoDB_URI:   mongodb_uri,
 		Database_Name: database_name,
 		Redis_URL:     redis_url,
+		Port:          port,
 	}, nil
 }

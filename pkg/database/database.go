@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/mscandan/url-shortener/pkg/config"
@@ -16,6 +15,8 @@ var (
 )
 
 func createClient(env *config.EnvironmentConfig) (*mongo.Client, error) {
+	log.Println("Attempting to create mongo client")
+
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(env.MongoDB_URI))
 	if err != nil {
 		log.Println("Can't connect to Mongo", err)
@@ -23,10 +24,11 @@ func createClient(env *config.EnvironmentConfig) (*mongo.Client, error) {
 	}
 
 	if err = client.Ping(context.Background(), readpref.Primary()); err != nil {
-		fmt.Printf("could not ping to mongo db service: %v\n", err)
+		log.Printf("could not ping to mongo db service: %v\n", err)
 		return nil, err
 	}
 
+	log.Println("mongo client creation succesfull")
 	return client, nil
 }
 
