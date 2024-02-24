@@ -9,6 +9,7 @@ import (
 
 type EnvironmentConfig struct {
 	MongoDB_URI   string
+	Redis_URL     string
 	Database_Name string
 }
 
@@ -38,8 +39,15 @@ func Config() (*EnvironmentConfig, error) {
 		return nil, &EnvironmentConfigMissingError{MissingKey: "DATABASE_NAME"}
 	}
 
+	redis_url := os.Getenv("REDIS_URL")
+
+	if database_name == "" {
+		return nil, &EnvironmentConfigMissingError{MissingKey: "REDIS_URL"}
+	}
+
 	return &EnvironmentConfig{
 		MongoDB_URI:   mongodb_uri,
 		Database_Name: database_name,
+		Redis_URL:     redis_url,
 	}, nil
 }

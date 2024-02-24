@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mscandan/url-shortener/controller"
+	"github.com/mscandan/url-shortener/pkg/cache"
 	"github.com/mscandan/url-shortener/pkg/config"
 	"github.com/mscandan/url-shortener/pkg/database"
 )
@@ -20,9 +21,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	db := database.GetDB()
+	if err := cache.Setup(environment_config); err != nil {
+		log.Fatalln(err)
+	}
 
-	controller := controller.Controller{DB: db}
+	db := database.GetDB()
+	cache_client := cache.GetClient()
+
+	controller := controller.Controller{DB: db, Cache: cache_client}
 
 	app := fiber.New()
 

@@ -15,14 +15,14 @@ func (base *Controller) GetFullUrlByShortUrl(c *fiber.Ctx) error {
 		return c.SendStatus(400)
 	}
 
-	result, err := service.GetFullUrlByShortUrl(base.DB, shortened_url)
+	result, err := service.GetFullUrlByShortUrl(base.DB, base.Cache, shortened_url)
 
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	return c.Redirect(result.FullUrl)
+	return c.Redirect(*result)
 }
 
 func (base *Controller) CreateShortUrl(c *fiber.Ctx) error {
@@ -32,7 +32,7 @@ func (base *Controller) CreateShortUrl(c *fiber.Ctx) error {
 		return err
 	}
 
-	created_id, err := service.CreateShortUrl(base.DB, payload)
+	created_id, err := service.CreateShortUrl(base.DB, base.Cache, payload)
 
 	if err != nil {
 		log.Println(err)
@@ -45,8 +45,6 @@ func (base *Controller) CreateShortUrl(c *fiber.Ctx) error {
 		log.Println(err)
 		return err
 	}
-
-	// write it to redis
 
 	formatted_short_url := c.Hostname() + "/" + created_doc.ShortenedUrl
 
