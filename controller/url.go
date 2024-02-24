@@ -13,7 +13,7 @@ func (base *Controller) GetFullUrlByShortUrl(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	if id == "" {
-		return nil
+		return c.SendStatus(400)
 	}
 
 	// get from db if exists redirect to it
