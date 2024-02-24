@@ -36,7 +36,7 @@ func main() {
 		MaxAge:        3600,
 	})
 
-	app.Get("/:id", controller.GetFullUrlByShortUrl)
+	app.Get("/:shortened_url", controller.GetFullUrlByShortUrl)
 
 	app.Post("/url", controller.CreateShortUrl)
 

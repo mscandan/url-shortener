@@ -6,24 +6,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mscandan/url-shortener/dto"
 	"github.com/mscandan/url-shortener/service"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (base *Controller) GetFullUrlByShortUrl(c *fiber.Ctx) error {
-	id := c.Params("id")
+	shortened_url := c.Params("shortened_url")
 
-	if id == "" {
+	if shortened_url == "" {
 		return c.SendStatus(400)
 	}
 
-	// get from db if exists redirect to it
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	result, err := service.GetFullUrlByShortUrl(base.DB, objectId)
+	result, err := service.GetFullUrlByShortUrl(base.DB, shortened_url)
 
 	if err != nil {
 		log.Println(err)
@@ -40,14 +32,23 @@ func (base *Controller) CreateShortUrl(c *fiber.Ctx) error {
 		return err
 	}
 
-	result, err := service.CreateShortUrl(base.DB, payload)
+	created_id, err := service.CreateShortUrl(base.DB, payload)
 
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	formatted_short_url := c.Hostname() + "/" + *result
+	created_doc, err := service.GetById(base.DB, *created_id)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// write it to redis
+
+	formatted_short_url := c.Hostname() + "/" + created_doc.ShortenedUrl
 
 	span := "<span>" + formatted_short_url + "</span>"
 
